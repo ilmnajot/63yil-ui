@@ -1,0 +1,120 @@
+.info {
+  align-self: start;
+}
+
+.summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: var(--tap-size);
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-primary-strong);
+  cursor: pointer;
+  list-style: none;
+}
+
+/* Hide the default triangle; the chevron below replaces it. */
+.summary::-webkit-details-marker {
+  display: none;
+}
+
+.chevron {
+  font-size: 22px;
+  line-height: 1;
+  transition: transform 0.2s ease;
+}
+
+details[open] .chevron {
+  transform: rotate(180deg);
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin-top: var(--space-3);
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+  margin: 0;
+}
+
+.facts dt,
+.heading {
+  margin-bottom: var(--space-1);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.facts dd {
+  margin: 0;
+  font-weight: 700;
+}
+
+.forms {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-2) var(--space-1);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-muted);
+}
+
+.formGlyph {
+  font-size: clamp(30px, 7vw, 40px);
+  line-height: 1.5;
+  color: var(--color-primary-strong);
+}
+
+.formLabel {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+.example {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--color-primary-soft);
+}
+
+.exampleWord {
+  flex: none;
+  font-size: 32px;
+  line-height: 1.4;
+  font-weight: 700;
+  color: var(--color-primary-strong);
+}
+
+@media (max-width: 599px) {
+  .info {
+    padding-block: var(--space-2);
+  }
+
+  .facts {
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+  }
+}

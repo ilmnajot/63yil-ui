@@ -1,0 +1,80 @@
+.hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  background: linear-gradient(160deg, #fff8e8, #effaf5);
+}
+
+.glyphCircle {
+  display: grid;
+  place-items: center;
+  width: clamp(150px, 22vw, 200px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--color-surface);
+  box-shadow: var(--shadow-raised);
+}
+
+.glyph {
+  font-size: clamp(90px, 13vw, 120px);
+  line-height: 1;
+  color: var(--color-primary-strong);
+  /* Amiri sits low in its line box; nudge it to look centered. */
+  transform: translateY(-8%);
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.name {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  font-size: 28px;
+  font-weight: 900;
+  color: var(--color-primary-strong);
+}
+
+.name :global(.arabic) {
+  font-size: 30px;
+  font-weight: 700;
+}
+
+/* Phones and short screens: one compact row (letter on the left, name and sound buttons on the right). */
+@media (max-width: 599px), (max-height: 499px) {
+  .hero {
+    flex-direction: row;
+    gap: var(--space-4);
+    padding: var(--space-3);
+    align-self: start;
+  }
+
+  .glyphCircle {
+    flex: none;
+    width: 104px;
+  }
+
+  .glyph {
+    font-size: 68px;
+  }
+
+  .details {
+    align-items: flex-start;
+    gap: var(--space-3);
+    min-width: 0;
+  }
+
+  .name {
+    font-size: 24px;
+    gap: var(--space-2);
+  }
+
+  .name :global(.arabic) {
+    font-size: 24px;
+  }
+}

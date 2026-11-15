@@ -1,0 +1,47 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.intro h1 {
+  font-size: clamp(26px, 4vw, 36px);
+  font-weight: 900;
+  color: var(--color-primary-strong);
+}
+
+.intro p {
+  color: var(--color-text-muted);
+  font-size: 17px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Phones: 3 letters per row (2 on very narrow screens) so the alphabet needs less scrolling. */
+@media (max-width: 599px) {
+  .page {
+    gap: var(--space-4);
+  }
+
+  .intro p {
+    font-size: 15px;
+  }
+
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-2);
+  }
+}
+
+@media (max-width: 339px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

@@ -1,0 +1,81 @@
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  border-top: 6px solid var(--panel-color);
+  /* Leaves room for the sticky header when the panel is scrolled into view. */
+  scroll-margin-top: 80px;
+}
+
+.trace {
+  --panel-color: var(--activity-trace);
+}
+
+.write {
+  --panel-color: var(--activity-write);
+}
+
+.listen {
+  --panel-color: var(--activity-listen);
+}
+
+.repeat {
+  --panel-color: var(--activity-repeat);
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.kicker {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--panel-color);
+}
+
+.title {
+  font-size: clamp(20px, 3vw, 24px);
+  font-weight: 900;
+}
+
+.step {
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-pill);
+  background: var(--color-primary-soft);
+  color: var(--color-primary-strong);
+  font-size: 14px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-4);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border);
+}
+
+@media (max-width: 599px) {
+  .panel {
+    gap: var(--space-4);
+  }
+
+  .footer > * {
+    width: 100%;
+  }
+}
+
+.celebrate {
+  flex: 1;
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--color-success);
+}

@@ -1,0 +1,131 @@
+.tabs {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Each activity sets its own color; the shared rules below use it. */
+.trace {
+  --tab-color: var(--activity-trace);
+  --tab-soft: var(--activity-trace-soft);
+}
+
+.write {
+  --tab-color: var(--activity-write);
+  --tab-soft: var(--activity-write-soft);
+}
+
+.listen {
+  --tab-color: var(--activity-listen);
+  --tab-soft: var(--activity-listen-soft);
+}
+
+.repeat {
+  --tab-color: var(--activity-repeat);
+  --tab-soft: var(--activity-repeat-soft);
+}
+
+.tab {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: var(--space-3) var(--space-2);
+  border: 3px solid transparent;
+  border-radius: var(--radius-lg);
+  background: var(--tab-soft);
+  color: var(--tab-color);
+  text-decoration: none;
+  transition: transform 0.12s ease, border-color 0.15s ease;
+}
+
+@media (hover: hover) {
+  .tab:hover {
+    transform: translateY(-2px);
+  }
+}
+
+.active {
+  border-color: var(--tab-color);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+}
+
+.icon {
+  font-size: 28px;
+  line-height: 1.2;
+}
+
+.label {
+  font-weight: 900;
+  font-size: 17px;
+}
+
+.description {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.check {
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-2);
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--color-success);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+/* Phones and short screens: short rows (icon + name), so the activity starts higher on screen. */
+@media (max-width: 599px), (max-height: 499px) {
+  .tabs {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-2);
+  }
+
+  .tab {
+    flex-direction: row;
+    justify-content: center;
+    gap: var(--space-2);
+    min-height: 52px;
+    padding: var(--space-2);
+    border-radius: var(--radius-md);
+  }
+
+  .icon {
+    font-size: 22px;
+  }
+
+  .label {
+    font-size: 15px;
+  }
+
+  .description {
+    display: none;
+  }
+
+  .check {
+    top: 50%;
+    right: var(--space-2);
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    font-size: 11px;
+  }
+}
+
+@media (min-width: 600px) and (max-height: 499px) {
+  .tabs {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}

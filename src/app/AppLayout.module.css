@@ -1,0 +1,117 @@
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: rgb(255 255 255 / 92%);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.headerInner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  max-width: var(--page-max-width);
+  margin: 0 auto;
+  /* env(safe-area-inset-*) keeps content clear of the iPhone notch and rounded corners. */
+  padding: var(--space-2) max(var(--page-gutter), env(safe-area-inset-right)) var(--space-2)
+    max(var(--page-gutter), env(safe-area-inset-left));
+  padding-top: max(var(--space-2), env(safe-area-inset-top));
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 20px;
+  font-weight: 900;
+  color: var(--color-primary-strong);
+  text-decoration: none;
+}
+
+.logo {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--color-primary);
+  color: #fff;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.stats {
+  display: flex;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.stat {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-pill);
+  background: var(--color-accent-soft);
+  color: #7a4a00;
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.stat strong {
+  font-weight: 900;
+}
+
+.main {
+  flex: 1;
+  width: 100%;
+  max-width: var(--page-max-width);
+  margin: 0 auto;
+  padding: var(--space-5) max(var(--page-gutter), env(safe-area-inset-right))
+    max(var(--space-7), env(safe-area-inset-bottom)) max(var(--page-gutter), env(safe-area-inset-left));
+}
+
+@media (max-width: 599px) {
+  .main {
+    padding-top: var(--space-4);
+  }
+
+  .logo {
+    width: 36px;
+    height: 36px;
+  }
+
+  .stat {
+    padding: var(--space-1) var(--space-2);
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 640px) {
+  .brandName {
+    display: none;
+  }
+}
+
+@media (max-width: 460px) {
+  .stat:last-child {
+    display: none;
+  }
+}

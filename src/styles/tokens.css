@@ -1,0 +1,75 @@
+/*
+ * Design tokens: every color, size and radius used in the app.
+ * Change a value here and it updates everywhere.
+ */
+:root {
+  /* Brand */
+  --color-primary: #0e7c66;
+  --color-primary-strong: #0a5c4c;
+  --color-primary-soft: #dff3ec;
+  --color-accent: #f4a62a;
+  --color-accent-soft: #fff1d6;
+
+  /* Surfaces and text */
+  --color-bg: #f6f2ea;
+  --color-surface: #ffffff;
+  --color-surface-muted: #fbf8f2;
+  --color-border: #e7e0d3;
+  --color-text: #1f2a2a;
+  --color-text-muted: #5f6b6b;
+
+  /* Feedback */
+  --color-success: #1f9d55;
+  --color-success-soft: #e3f6ea;
+  --color-danger: #c2410c;
+  --color-danger-soft: #fdece4;
+
+  /* One color per activity, used on its tab and panel */
+  --activity-trace: #d97706;
+  --activity-trace-soft: #fff4e0;
+  --activity-write: #db2777;
+  --activity-write-soft: #fde9f2;
+  --activity-listen: #0284c7;
+  --activity-listen-soft: #e2f3fc;
+  --activity-repeat: #7c3aed;
+  --activity-repeat-soft: #efe8fd;
+
+  /* Typography */
+  --font-ui: 'Nunito', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-arabic: 'Amiri', 'Noto Naskh Arabic', 'Geeza Pro', serif;
+
+  /* Spacing scale */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+
+  /* Shape */
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-pill: 999px;
+  --shadow-card: 0 1px 2px rgb(31 42 42 / 6%), 0 6px 20px rgb(31 42 42 / 6%);
+  --shadow-raised: 0 10px 30px rgb(31 42 42 / 12%);
+
+  --page-max-width: 1200px;
+
+  /* Smallest comfortable size for anything a finger taps (Apple/Google guidelines). */
+  --tap-size: 44px;
+
+  /* Page side padding: tighter on phones. */
+  --page-gutter: clamp(12px, 4vw, 24px);
+}
+
+/*
+ * Breakpoints (CSS variables can't be used inside @media, so they are written out in each file):
+ *   phone   : max-width 599px
+ *   tablet  : 600px – 1023px
+ *   laptop  : 1024px and wider
+ *   compact : (max-width: 599px), (max-height: 499px) — phones in either orientation; used where
+ *             vertical space matters (letter card, info section, activity tabs)
+ * Hover effects are wrapped in `@media (hover: hover)` so they don't "stick" after a tap on touch screens.
+ */

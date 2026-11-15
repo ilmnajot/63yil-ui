@@ -1,0 +1,29 @@
+/*
+ * Square drawing area. It is as wide as its column but never taller than the screen
+ * allows (so a phone held sideways still shows the whole canvas), and never tiny.
+ * `svh` = small viewport height: the height with the mobile browser bars showing.
+ */
+.container {
+  width: min(100%, 460px, max(240px, 100svh - 220px));
+  aspect-ratio: 1;
+  margin: 0 auto;
+  border-radius: var(--radius-lg);
+  border: 2px dashed var(--color-border);
+  background: linear-gradient(160deg, #fffdf7, #f5fbf8);
+  overflow: hidden;
+}
+
+.canvas {
+  display: block;
+  /* Stops the page from scrolling or zooming while the child draws with a finger. */
+  touch-action: none;
+  /* Stops the long-press menu and text selection on iOS while drawing. */
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  cursor: crosshair;
+}
+
+.disabled {
+  cursor: default;
+}
