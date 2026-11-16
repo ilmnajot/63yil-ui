@@ -33,6 +33,8 @@
   --activity-listen-soft: #e2f3fc;
   --activity-repeat: #7c3aed;
   --activity-repeat-soft: #efe8fd;
+  --activity-join: #0f8a5f;
+  --activity-join-soft: #e2f5ea;
 
   /* Typography */
   --font-ui: 'Nunito', system-ui, -apple-system, 'Segoe UI', sans-serif;

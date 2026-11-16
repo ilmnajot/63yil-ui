@@ -1,5 +1,5 @@
 /**
- * Generates `docs/seed.sql`: the default rows for the `realdb` schema of 63yil-api,
+ * Generates `docs/seed.sql`: the default rows for the `realdb` schema of 63yil-api (letters, the five steps, drills),
  * built from the same letter data the UI uses in mock mode (src/api/mock/lettersData.ts).
  *
  * Run:  npm run seed:sql
@@ -97,6 +97,45 @@ out('insert into realdb.repeat (letter_id, audio_url, instructions) values')
 out(mockLetters.map((l) => `    (${l.id}, ${q(l.activities.repeat.audioUrl)}, ${q(l.activities.repeat.instructions)})`).join(',\n'))
 out('on conflict (letter_id) do nothing;')
 out()
+
+out('-- Birikma (joining): one row per letter (tables: docs/schema-joining.sql)')
+out('insert into realdb.joining (letter_id, instructions) values')
+out(mockLetters.map((l) => `    (${l.id}, ${q(l.activities.join!.instructions)})`).join(',\n'))
+out('on conflict (letter_id) do nothing;')
+out()
+
+out('-- Birikma drills, in order. features: harakat,madd,sukun,shadda,tanwin,ghunna')
+out('insert into realdb.drill (joining_id, sort_order, text, features, audio_url)')
+out('select j.id, v.sort_order, v.text, v.features, v.audio_url')
+out('from (values')
+out(
+  mockLetters
+    .flatMap((l) =>
+      l.activities.join!.drills.map(
+        (d, i) => `    (${l.id}, ${i + 1}, ${q(d.text)}, ${q(d.features.join(','))}, ${q(d.audioUrl)})`,
+      ),
+    )
+    .join(',\n'),
+)
+out(') as v(letter_id, sort_order, text, features, audio_url)')
+out('join realdb.joining j on j.letter_id = v.letter_id')
+out('on conflict (joining_id, sort_order) do nothing;')
+out()
+
+out('-- Recordings for databases seeded before audio existed: fill audio_url only where it is still empty,')
+out('-- so a URL set by hand (e.g. a qari recording elsewhere) is never overwritten.')
+const audioValues = mockLetters
+  .filter((l) => l.activities.listen.audioUrl)
+  .map((l) => `    (${l.id}, ${q(l.activities.listen.audioUrl)})`)
+  .join(',\n')
+for (const table of ['listen', 'repeat']) {
+  out(`update realdb.${table} t set audio_url = v.url`)
+  out('from (values')
+  out(audioValues)
+  out(') as v(letter_id, url)')
+  out('where t.letter_id = v.letter_id and t.audio_url is null;')
+  out()
+}
 
 out('commit;')
 out()

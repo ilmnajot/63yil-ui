@@ -1,0 +1,56 @@
+.session {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  scroll-margin-top: 80px;
+}
+
+.bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.count {
+  flex: none;
+  font-weight: 900;
+  color: var(--color-primary-strong);
+  font-variant-numeric: tabular-nums;
+}
+
+.track {
+  flex: 1;
+  height: 12px;
+  border-radius: var(--radius-pill);
+  background: var(--color-border);
+  overflow: hidden;
+}
+
+.fill {
+  height: 100%;
+  border-radius: inherit;
+  background: var(--activity-write);
+  transition: width 0.3s ease;
+}
+
+/* The exit control (link or button) passed in by the page. */
+.bar > :last-child:not(.track) {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap-size);
+  padding: 0 var(--space-2);
+  color: var(--color-text-muted);
+  text-decoration: none;
+  white-space: nowrap;
+  border: none;
+  background: none;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+@media (hover: hover) {
+  .bar > :last-child:not(.track):hover {
+    color: var(--color-text);
+  }
+}

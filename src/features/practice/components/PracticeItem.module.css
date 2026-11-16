@@ -1,0 +1,61 @@
+.card {
+  border-top: 6px solid var(--activity-write);
+}
+
+.embedded {
+  border: 2px solid var(--activity-write-soft);
+  box-shadow: none;
+}
+
+.prompt {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  width: 100%;
+}
+
+.task {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.label {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--color-text-muted);
+}
+
+.name {
+  font-size: clamp(30px, 6vw, 40px);
+  font-weight: 900;
+  line-height: 1.1;
+  color: var(--activity-write);
+}
+
+.hintGlyph {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 84px;
+  height: 84px;
+  border-radius: var(--radius-md);
+  background: var(--color-surface-muted);
+  font-size: 52px;
+  line-height: 1;
+  color: var(--color-primary-strong);
+}
+
+@media (max-width: 599px) {
+  .prompt {
+    align-items: flex-start;
+  }
+
+  .hintGlyph {
+    width: 64px;
+    height: 64px;
+    font-size: 40px;
+  }
+}

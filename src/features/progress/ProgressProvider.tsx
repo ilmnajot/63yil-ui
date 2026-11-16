@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react
 import { safeStorage } from '@/shared/storage/safeStorage'
 import type { ActivityType } from '@/types/letter'
 import { ProgressContext } from './ProgressContext'
-import { completeActivity, emptyProgress, parseProgress, type ProgressState } from './progressState'
+import { addPracticeXp, completeActivity, emptyProgress, parseProgress, type ProgressState } from './progressState'
 
 /** Bump the version if the stored shape ever changes, so old data is ignored. */
 const STORAGE_KEY = '63yil.progress.v1'
@@ -22,6 +22,10 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
     setProgress((current) => completeActivity(current, letterId, activity))
   }, [])
 
-  const value = useMemo(() => ({ progress, markDone }), [progress, markDone])
+  const earnPracticeXp = useCallback((amount: number) => {
+    setProgress((current) => addPracticeXp(current, amount))
+  }, [])
+
+  const value = useMemo(() => ({ progress, markDone, earnPracticeXp }), [progress, markDone, earnPracticeXp])
   return <ProgressContext.Provider value={value}>{children}</ProgressContext.Provider>
 }

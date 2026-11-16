@@ -3,32 +3,35 @@ import { useNavigate } from 'react-router'
 import { lessonPath } from '@/app/paths'
 import { ACTIVITIES } from '@/features/activities/registry'
 import { useProgress } from '@/features/progress/ProgressContext'
-import { isActivityDone, isLetterDone } from '@/features/progress/progressState'
+import { isActivityDone } from '@/features/progress/progressState'
 import { useI18n } from '@/i18n/useI18n'
 import { Button } from '@/shared/components/Button'
 import { Card } from '@/shared/components/Card'
 import { ErrorBoundary } from '@/shared/components/ErrorBoundary'
-import { ACTIVITY_TYPES, type ActivityType, type Letter, type LetterSummary } from '@/types/letter'
+import { availableActivities, type ActivityType, type Letter, type LetterSummary } from '@/types/letter'
 import styles from './ActivityPanel.module.css'
 
 interface ActivityPanelProps {
   letter: Letter
   activity: ActivityType
+  /** All letters, in order. */
+  alphabet: LetterSummary[]
   /** The next letter in the alphabet, if any. */
   next?: LetterSummary
 }
 
 /** Shows the current activity and, once it is done, a button to move on. */
-export function ActivityPanel({ letter, activity, next }: ActivityPanelProps) {
+export function ActivityPanel({ letter, activity, alphabet, next }: ActivityPanelProps) {
   const { progress, markDone } = useProgress()
   const { t } = useI18n()
   const navigate = useNavigate()
   const { labelKey, component: Activity } = ACTIVITIES[activity]
 
-  const step = ACTIVITY_TYPES.indexOf(activity)
-  const nextActivity = ACTIVITY_TYPES[step + 1]
+  const steps = availableActivities(letter)
+  const step = steps.indexOf(activity)
+  const nextActivity = steps[step + 1]
   const activityDone = isActivityDone(progress, letter.id, activity)
-  const letterDone = isLetterDone(progress, letter.id)
+  const letterDone = steps.every((type) => isActivityDone(progress, letter.id, type))
 
   const handleComplete = useCallback(() => markDone(letter.id, activity), [markDone, letter.id, activity])
 
@@ -57,12 +60,12 @@ export function ActivityPanel({ letter, activity, next }: ActivityPanelProps) {
             {t('panel.title', { activity: t(labelKey), letter: letter.name })}
           </h2>
         </div>
-        <span className={styles.step}>{t('panel.step', { step: step + 1, total: ACTIVITY_TYPES.length })}</span>
+        <span className={styles.step}>{t('panel.step', { step: step + 1, total: steps.length })}</span>
       </header>
 
       <ErrorBoundary>
         {/* `key` gives each letter + activity a fresh state (empty canvas, new shuffle, ...). */}
-        <Activity key={`${letter.id}-${activity}`} letter={letter} onComplete={handleComplete} />
+        <Activity key={`${letter.id}-${activity}`} letter={letter} alphabet={alphabet} onComplete={handleComplete} />
       </ErrorBoundary>
 
       {activityDone && (

@@ -31,6 +31,12 @@ export function DrawingCanvas({ glyph, showGuide, strokes, onStrokesChange, disa
   const containerRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const currentStroke = useRef<Stroke | null>(null)
+  // Latest strokes, so a new stroke is always added to the newest list even if several
+  // strokes end before React re-renders (e.g. very fast taps for the dots of ث).
+  const latestStrokes = useRef(strokes)
+  useLayoutEffect(() => {
+    latestStrokes.current = strokes
+  }, [strokes])
   const [size, setSize] = useState(0)
   const fontReady = useFontReady(glyph)
 
@@ -128,7 +134,9 @@ export function DrawingCanvas({ glyph, showGuide, strokes, onStrokesChange, disa
     const stroke = currentStroke.current
     if (!stroke) return
     currentStroke.current = null
-    onStrokesChange([...strokes, stroke])
+    const next = [...latestStrokes.current, stroke]
+    latestStrokes.current = next
+    onStrokesChange(next)
   }
 
   return (

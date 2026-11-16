@@ -4,23 +4,25 @@ import { ACTIVITIES } from '@/features/activities/registry'
 import { useProgress } from '@/features/progress/ProgressContext'
 import { isActivityDone } from '@/features/progress/progressState'
 import { useI18n } from '@/i18n/useI18n'
-import { ACTIVITY_TYPES, type ActivityType } from '@/types/letter'
+import type { ActivityType } from '@/types/letter'
 import styles from './ActivityTabs.module.css'
 
 interface ActivityTabsProps {
   letterId: number
   current: ActivityType
+  /** The steps this letter has, in order. */
+  available: ActivityType[]
 }
 
-/** The four activity buttons (Trace, Write, Listen, Repeat) with a check mark when done. */
-export function ActivityTabs({ letterId, current }: ActivityTabsProps) {
+/** The lesson's step buttons (Chizish, Yozish, Tinglash, Takrorlash, Birikma) with a check mark when done. */
+export function ActivityTabs({ letterId, current, available }: ActivityTabsProps) {
   const { progress } = useProgress()
   const { t } = useI18n()
 
   return (
     <nav aria-label={t('activities.nav')}>
       <ul className={styles.tabs}>
-        {ACTIVITY_TYPES.map((type) => {
+        {available.map((type) => {
           const { labelKey, descriptionKey, icon } = ACTIVITIES[type]
           const done = isActivityDone(progress, letterId, type)
           const active = type === current

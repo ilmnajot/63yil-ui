@@ -1,0 +1,61 @@
+.prompt {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: 100%;
+}
+
+.features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.feature {
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-pill);
+  background: var(--activity-join-soft);
+  color: var(--activity-join);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+/* The tajweed features get stronger colors, so they stand out. */
+.shadda,
+.ghunna {
+  background: var(--activity-join);
+  color: #fff;
+}
+
+.phase {
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.tip {
+  font-size: 14px;
+  color: var(--color-text-muted);
+}
+
+.model {
+  align-self: flex-start;
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-muted);
+  font-size: 36px;
+  line-height: 1.8;
+  color: var(--color-primary-strong);
+}
+
+@media (max-width: 699px) {
+  .phase {
+    font-size: 16px;
+  }
+
+  .model {
+    font-size: 28px;
+  }
+}

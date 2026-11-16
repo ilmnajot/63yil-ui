@@ -118,3 +118,7 @@
 .repeat {
   background: var(--activity-repeat);
 }
+
+.join {
+  background: var(--activity-join);
+}

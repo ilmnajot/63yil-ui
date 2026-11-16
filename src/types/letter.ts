@@ -3,12 +3,17 @@
  * They mirror the JSON returned by the backend; see `docs/API.md` for the full contract.
  */
 
-/** The four practice activities every letter has, in the order the child does them. */
-export const ACTIVITY_TYPES = ['trace', 'write', 'listen', 'repeat'] as const
+/** The five practice steps of every letter lesson, in the order the child does them. */
+export const ACTIVITY_TYPES = ['trace', 'write', 'listen', 'repeat', 'join'] as const
 export type ActivityType = (typeof ACTIVITY_TYPES)[number]
 
 export function isActivityType(value: unknown): value is ActivityType {
   return typeof value === 'string' && (ACTIVITY_TYPES as readonly string[]).includes(value)
+}
+
+/** The steps this letter actually has, in order (Birikma is missing if the backend sends no drills). */
+export function availableActivities(letter: Letter): ActivityType[] {
+  return ACTIVITY_TYPES.filter((type) => letter.activities[type] != null)
 }
 
 /** How a letter looks depending on its position in a word. */
@@ -65,6 +70,35 @@ export interface RepeatActivity {
   audioUrl: string | null
 }
 
+/**
+ * What a drill practises, shown as small labels (and used to give a tip):
+ * - `harakat`: zabar / zer / pesh (fatha, kasra, damma)
+ * - `madd`: a long vowel (بَا)
+ * - `sukun`: jazm, a letter without a vowel (أَبْ)
+ * - `shadda`: tashdid, a doubled letter (أَبَّ)
+ * - `tanwin`: ikki zabar / zer / pesh at the end (بًا بٍ بٌ)
+ * - `ghunna`: gʻunna, the nasal sound of نّ and مّ
+ */
+export const DRILL_FEATURES = ['harakat', 'madd', 'sukun', 'shadda', 'tanwin', 'ghunna'] as const
+export type DrillFeature = (typeof DRILL_FEATURES)[number]
+
+/** One Qaida-style exercise: a short vocalized syllable or word to trace and then write. */
+export interface Drill {
+  id: number
+  /** Fully vocalized Arabic, e.g. "أَتَبَ". */
+  text: string
+  features: DrillFeature[]
+  /** Recording of the drill read aloud. `null` = the browser's speech voice reads `text`. */
+  audioUrl: string | null
+}
+
+/** Join ("Birikma"): the lesson's letter joined with earlier letters, with harakat, traced then written. */
+export interface JoinActivity {
+  instructions: string
+  /** In order, simple → harder. */
+  drills: Drill[]
+}
+
 /** Everything needed to run one letter lesson. */
 export interface Letter extends LetterSummary {
   /** Arabic spelling of the name, e.g. "ألف". Also what the speech voice reads aloud. */
@@ -80,5 +114,7 @@ export interface Letter extends LetterSummary {
     write: WriteActivity
     listen: ListenActivity
     repeat: RepeatActivity
+    /** Can be `null` while the backend does not provide drills yet; the step is then hidden. */
+    join: JoinActivity | null
   }
 }

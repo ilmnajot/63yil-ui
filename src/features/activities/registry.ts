@@ -7,6 +7,7 @@
 import type { ComponentType } from 'react'
 import type { MessageKey } from '@/i18n/messages/uz'
 import type { ActivityType } from '@/types/letter'
+import { JoinActivity } from './join/JoinActivity'
 import { ListenActivity } from './listen/ListenActivity'
 import { RepeatActivity } from './repeat/RepeatActivity'
 import { TraceActivity } from './trace/TraceActivity'
@@ -46,5 +47,11 @@ export const ACTIVITIES: Record<ActivityType, ActivityDefinition> = {
     descriptionKey: 'activity.repeat.description',
     icon: '🎤',
     component: RepeatActivity,
+  },
+  join: {
+    labelKey: 'activity.join.label',
+    descriptionKey: 'activity.join.description',
+    icon: '🔗',
+    component: JoinActivity,
   },
 }

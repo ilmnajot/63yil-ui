@@ -1,0 +1,121 @@
+.summary {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  max-width: 760px;
+  margin: 0 auto;
+  border-top: 6px solid var(--activity-write);
+}
+
+.embedded {
+  max-width: none;
+  border: 2px solid var(--activity-write-soft);
+  box-shadow: none;
+}
+
+.header {
+  text-align: center;
+}
+
+.emoji {
+  font-size: 52px;
+  line-height: 1.2;
+}
+
+.title {
+  font-size: clamp(26px, 5vw, 34px);
+  font-weight: 900;
+  color: var(--color-primary-strong);
+}
+
+.score {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.xp {
+  display: inline-block;
+  margin-top: var(--space-2);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-pill);
+  background: var(--color-accent-soft);
+  color: #7a4a00;
+  font-weight: 900;
+}
+
+.results {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(76px, 1fr));
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.result {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-2) var(--space-1);
+  border: 2px solid var(--color-success);
+  border-radius: var(--radius-md);
+  background: var(--color-success-soft);
+}
+
+.skipped {
+  border-color: var(--color-border);
+  background: var(--color-surface-muted);
+}
+
+.glyph {
+  font-size: 40px;
+  line-height: 1.4;
+  color: var(--color-primary-strong);
+}
+
+.stars {
+  font-size: 14px;
+  letter-spacing: 1px;
+  color: var(--color-accent);
+}
+
+.skipped .stars {
+  color: var(--color-text-muted);
+}
+
+.hint {
+  position: absolute;
+  top: 2px;
+  right: 4px;
+  font-size: 12px;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2) var(--space-4);
+}
+
+/* Links passed in by the page. */
+.actions a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap-size);
+  font-weight: 800;
+  color: var(--color-primary-strong);
+}
+
+@media (max-width: 599px) {
+  .actions {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+  }
+
+  .actions a {
+    justify-content: center;
+  }
+}

@@ -13,29 +13,55 @@ export interface PronounceOptions {
   rate?: number
 }
 
-let currentAudio: HTMLAudioElement | null = null
+/** Stops the recording that is playing right now, if any. */
+let stopCurrentAudio: (() => void) | null = null
 
 /** Stops any sound that is still playing, so two sounds never overlap. */
 export function stopPronouncing(): void {
-  currentAudio?.pause()
-  currentAudio = null
+  stopCurrentAudio?.()
+  stopCurrentAudio = null
   if ('speechSynthesis' in window) window.speechSynthesis.cancel()
 }
 
-/** Resolves when the sound has finished playing. */
-export function pronounce({ audioUrl, text, rate = 1 }: PronounceOptions): Promise<void> {
+/**
+ * Resolves when the sound has finished playing (or was stopped by another sound).
+ * If the recording can't be played (missing file, network error, unsupported format),
+ * the speech voice is used instead, so the child always hears something.
+ */
+export async function pronounce({ audioUrl, text, rate = 1 }: PronounceOptions): Promise<void> {
   stopPronouncing()
-  return audioUrl ? playFile(audioUrl, rate) : speak(text, rate)
+  if (audioUrl) {
+    try {
+      return await playFile(audioUrl, rate)
+    } catch (error) {
+      console.warn(`Recording ${audioUrl} could not be played, using the speech voice instead.`, error)
+    }
+  }
+  return speak(text, rate)
 }
 
 function playFile(url: string, rate: number): Promise<void> {
   return new Promise((resolve, reject) => {
     const audio = new Audio(url)
     audio.playbackRate = rate
-    audio.onended = () => resolve()
-    audio.onerror = () => reject(new Error('Could not play the audio file.'))
-    currentAudio = audio
-    audio.play().catch(reject)
+    const finish = () => {
+      audio.onended = null
+      audio.onerror = null
+      if (stopCurrentAudio === stop) stopCurrentAudio = null
+      resolve()
+    }
+    // Interrupted by the next sound: that is a normal end, not a failure.
+    const stop = () => {
+      audio.pause()
+      finish()
+    }
+    stopCurrentAudio = stop
+    audio.onended = finish
+    audio.onerror = () => reject(new Error(`Could not load ${url}`))
+    audio.play().catch((error: unknown) => {
+      if (error instanceof DOMException && error.name === 'AbortError') finish()
+      else reject(error)
+    })
   })
 }
 

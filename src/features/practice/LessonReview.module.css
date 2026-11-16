@@ -1,0 +1,51 @@
+.review {
+  padding-top: var(--space-5);
+  border-top: 1px dashed var(--color-border);
+}
+
+.intro {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-md);
+  background: var(--activity-write-soft);
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 900;
+  color: var(--activity-write);
+}
+
+.letters {
+  font-size: 28px;
+  line-height: 1.6;
+  color: var(--color-primary-strong);
+  /* Long lists (later letters) wrap instead of overflowing. */
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 599px) {
+  .review {
+    padding-top: var(--space-4);
+  }
+
+  .intro {
+    flex-direction: column;
+    align-items: stretch;
+    padding: var(--space-4);
+  }
+
+  .letters {
+    font-size: 24px;
+  }
+}

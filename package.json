@@ -5,13 +5,15 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:mock": "VITE_USE_MOCKS=true vite --port 5180 --strictPort",
     "build": "tsc --noEmit && vite build",
     "typecheck": "tsc --noEmit",
     "lint": "oxlint",
     "test": "vitest run",
     "test:watch": "vitest",
     "preview": "vite preview",
-    "seed:sql": "node scripts/generate-seed.ts"
+    "seed:sql": "node scripts/generate-seed.ts",
+    "audio:generate": "node scripts/generate-audio.ts"
   },
   "dependencies": {
     "react": "^19.3.1",

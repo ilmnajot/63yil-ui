@@ -23,6 +23,10 @@
   --panel-color: var(--activity-repeat);
 }
 
+.join {
+  --panel-color: var(--activity-join);
+}
+
 .header {
   display: flex;
   align-items: flex-start;

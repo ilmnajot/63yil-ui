@@ -4,6 +4,7 @@ import { useI18n } from '@/i18n/useI18n'
 import { useAsync } from '@/shared/hooks/useAsync'
 import { ErrorMessage, Loading } from '@/shared/components/StatusMessage'
 import { LetterTile } from './components/LetterTile'
+import { PracticeEntry } from './components/PracticeEntry'
 import styles from './LettersPage.module.css'
 
 /** Home page: every letter of the alphabet, with the child's progress on each. */
@@ -17,6 +18,8 @@ export function LettersPage() {
         <h1>{t('letters.title')}</h1>
         <p>{t('letters.intro')}</p>
       </header>
+
+      <PracticeEntry />
 
       {letters.status === 'loading' && <Loading label={t('letters.loading')} />}
       {letters.status === 'error' && (

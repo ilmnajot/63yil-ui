@@ -6,6 +6,7 @@
  * The ROWS table follows the columns of `realdb.letters`, so it can also be used to seed the database.
  */
 import type { Letter, LetterForms, LetterSummary } from '@/types/letter'
+import { buildDrills, drillAudioUrl, drillId } from './drillsData.ts'
 
 /** Tatweel: the connecting line used to show a letter's initial/medial/final forms. */
 const TATWEEL = 'ـ'
@@ -65,12 +66,25 @@ const ROWS: Row[] = [
   ['ي', 'ياء', 'Yo',    'y, "yer" soʻzidagi kabi',                           'Til oʻrtasi tanglayga tegib',                            ['يَد', 'yad', 'qoʻl']],
 ]
 
+/**
+ * Where a letter's recording lives, e.g. `/audio/letters/02-bo.m4a`.
+ * Files are in `public/audio/letters/` and served by the UI itself, so the path works in development and production.
+ * The same path is stored in `listen.audio_url` and `repeat.audio_url` (see `npm run seed:sql`).
+ * To use a qari's recording, replace the file with one of the same name: nothing else changes.
+ */
+export function letterAudioUrl(order: number, name: string): string {
+  const slug = name.normalize('NFD').toLowerCase().replace(/[^a-z]/g, '')
+  return `/audio/letters/${String(order).padStart(2, '0')}-${slug}.m4a`
+}
+
 /** Activity instructions, as they would be stored in the `instructions` column of each activity table. */
 const INSTRUCTIONS = {
   trace: (name: string) => `${name} harfini nuqtali chiziqlar boʻylab chizing.`,
   write: (name: string) => `Endi ${name} harfini namunasiz, oʻzingiz yozing.`,
   listen: () => 'Diqqat bilan tinglang, soʻng eshitgan harfingizni bosing.',
   repeat: (name: string) => `${name} harfini tinglang, soʻng uni aytib, ovozingizni yozib oling.`,
+  join: (name: string) =>
+    `${name} harfini oldingi harflar bilan qoʻshib yozamiz. Avval nuqtalar boʻylab chizing, keyin oʻzingiz yozing.`,
 }
 
 /**
@@ -95,6 +109,9 @@ export const mockLetterSummaries: LetterSummary[] = ROWS.map(([arabic, , name], 
   arabic,
 }))
 
+/** The letters in alphabet order, used to build each lesson's drills. */
+const ALPHABET = ROWS.map(([arabic]) => arabic)
+
 export const mockLetters: Letter[] = ROWS.map((row, index) => {
   const [arabic, arabicName, name, sound, makhraj, [exArabic, exTranslit, exMeaning]] = row
   return {
@@ -109,10 +126,19 @@ export const mockLetters: Letter[] = ROWS.map((row, index) => {
       write: { instructions: INSTRUCTIONS.write(name), form: 'isolated' },
       listen: {
         instructions: INSTRUCTIONS.listen(),
-        audioUrl: null,
+        audioUrl: letterAudioUrl(index + 1, name),
         distractors: DISTRACTORS[arabic]!.map((char) => mockLetterSummaries.find((item) => item.arabic === char)!),
       },
-      repeat: { instructions: INSTRUCTIONS.repeat(name), audioUrl: null },
+      repeat: { instructions: INSTRUCTIONS.repeat(name), audioUrl: letterAudioUrl(index + 1, name) },
+      join: {
+        instructions: INSTRUCTIONS.join(name),
+        drills: buildDrills(ALPHABET, index + 1).map((drill, i) => ({
+          id: drillId(index + 1, i),
+          text: drill.text,
+          features: drill.features,
+          audioUrl: drillAudioUrl(index + 1, i),
+        })),
+      },
     },
   }
 })

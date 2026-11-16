@@ -40,7 +40,7 @@ All active letters, sorted by `sort_order`. Used by the home page grid.
 
 ## `GET /api/letters/{id}`
 
-One letter with everything its lesson needs, including its four activities.
+One letter with everything its lesson needs, including its five steps (activities).
 
 ```json
 {
@@ -68,13 +68,24 @@ One letter with everything its lesson needs, including its four activities.
     "repeat": {
       "instructions": "Bo harfini tinglang, soʻng uni aytib, ovozingizni yozib oling.",
       "audioUrl": "https://cdn.example.com/audio/ba.mp3"
+    },
+    "join": {
+      "instructions": "Bo harfini oldingi harflar bilan qoʻshib yozamiz. Avval nuqtalar boʻylab chizing, keyin oʻzingiz yozing.",
+      "drills": [
+        { "id": 3, "text": "بَ بِ بُ", "features": ["harakat"], "audioUrl": "/audio/drills/02-01.m4a" },
+        { "id": 4, "text": "بَا",     "features": ["madd"],    "audioUrl": "/audio/drills/02-02.m4a" },
+        { "id": 7, "text": "إِبْ",    "features": ["sukun"],   "audioUrl": "/audio/drills/02-05.m4a" },
+        { "id": 8, "text": "إِبُّ",   "features": ["shadda"],  "audioUrl": "/audio/drills/02-06.m4a" }
+      ]
     }
   }
 }
 ```
 
-**Default data:** [`docs/seed.sql`](seed.sql) fills every `realdb` table with all 28 letters, their four activities and
-the Listen quiz wrong answers. It is generated from `src/api/mock/lettersData.ts` with `npm run seed:sql`, so the
+(`join.drills` shortened here; Bo has 7.)
+
+**Default data:** [`docs/seed.sql`](seed.sql) fills every `realdb` table with all 28 letters, their five steps,
+the Listen quiz wrong answers and the 196 Birikma drills. It is generated from `src/api/mock/lettersData.ts` with `npm run seed:sql`, so the
 mock data and the database always hold the same content. It is safe to run more than once (existing rows are skipped).
 
 ### Letter fields → `realdb.letters`
@@ -95,7 +106,7 @@ mock data and the database always hold the same content. It is safe to run more 
 
 ### Activities → one table each
 
-`activities` is **not a table**: it is the JSON object that groups the letter's four exercises.
+`activities` is **not a table**: it is the JSON object that groups the letter's five steps.
 The backend fills it from one row per table, matched by `letter_id`.
 
 | JSON                       | Table                  | Columns used |
@@ -105,20 +116,66 @@ The backend fills it from one row per table, matched by `letter_id`.
 | `activities.listen`        | `realdb.listen`        | `instructions`, `audio_url` → `audioUrl` |
 | `activities.listen.distractors` | `realdb.listen_distractor` + `realdb.letters` | the distractor letters' `id`, `sort_order`, `name`, `arabic` |
 | `activities.repeat`        | `realdb.repeat`        | `instructions`, `audio_url` → `audioUrl` |
+| `activities.join`          | `realdb.joining`       | `instructions` |
+| `activities.join.drills`   | `realdb.drill` (via `joining_id`) | `id`, `text`, `features` (split the comma list into an array), `audio_url` → `audioUrl`; ordered by `sort_order` |
 
 Rules:
 
-- **All four activities must be present.** If a letter has no active row in one of the tables, return a default
-  (e.g. a standard instruction text) rather than leaving it out; the lesson needs all four.
+- **trace, write, listen, repeat must always be present.** If a letter has no active row in one of those tables,
+  return a default (e.g. a standard instruction text) rather than leaving it out.
+- **`join` may be `null`** (or missing): the lesson then shows only the first four steps. Until the backend sends it,
+  that is what happens. Return `null` too when a letter has no active drills.
 - **`form`** must be one of `"isolated"`, `"initial"`, `"medial"`, `"final"`; it picks which shape the child draws.
   If `form_id` is `NULL`, return `"isolated"`.
-- **`audioUrl: null` is allowed.** The UI then uses the browser's built-in Arabic voice. Recorded audio
-  from a qari will sound much better, so filling these in is the most valuable content task.
-  Audio URLs must be reachable from the browser (public URL or served by the API). MP3 or M4A work in every browser.
+- **`audioUrl`** points at a recording, normally a path served by the UI itself, e.g. `/audio/letters/02-bo.m4a`
+  (files in `63yil-ui/public/audio/letters/`, see the README). A full URL to another server also works.
+  `null` is allowed: the UI then uses the browser's built-in Arabic voice. It also falls back to that voice
+  if a file can't be loaded. MP3 or M4A work in every browser.
 - **Drawings are scored in the browser.** Trace/Write need no stroke data from the backend: the UI draws
   the letter from the Arabic font and compares the child's strokes with it.
 - **`distractors`**: usually 3 letters. Look-alike or sound-alike letters (ب ت ث, ج ح خ, س ص) make the quiz more useful.
   Never include the letter itself.
+
+### Birikma (`join`) in the backend
+
+Tables: [`docs/schema-joining.sql`](schema-joining.sql) (run once), rows: re-run [`docs/seed.sql`](seed.sql).
+`features` values, in this order: `harakat` (zabar/zer/pesh), `madd`, `sukun` (jazm), `shadda` (tashdid), `tanwin`, `ghunna` (gʻunna).
+
+```xml
+<!-- Instructions of the letter's Birikma step (null = no step) -->
+<select id="getJoining" resultType="com.example._3yilapi.dto.JoiningRow">
+    select j.id, j.instructions
+    from realdb.joining j
+    where j.letter_id = #{letterId} and j.is_active = 1
+</select>
+
+<!-- Its drills, in order -->
+<select id="getDrills" resultType="com.example._3yilapi.dto.DrillRow">
+    select d.id, d.text, d.features, d.audio_url as "audioUrl"
+    from realdb.drill d
+    where d.joining_id = #{joiningId} and d.is_active = 1
+    order by d.sort_order
+</select>
+```
+
+```java
+public record JoiningRow(Long id, String instructions) {}
+public record DrillRow(Long id, String text, String features, String audioUrl) {}
+
+// In LetterDetail.Activities, add:  Join join
+public record Join(String instructions, List<Drill> drills) {}
+public record Drill(Long id, String text, List<String> features, String audioUrl) {}
+
+// In the service, after building the other four:
+JoiningRow joining = mapper.getJoining(id);
+LetterDetail.Join join = null;
+if (joining != null) {
+    List<LetterDetail.Drill> drills = mapper.getDrills(joining.id()).stream()
+            .map(d -> new LetterDetail.Drill(d.id(), d.text(), List.of(d.features().split(",")), d.audioUrl()))
+            .toList();
+    if (!drills.isEmpty()) join = new LetterDetail.Join(joining.instructions(), drills);
+}
+```
 
 ## Future endpoints (not used yet)
 

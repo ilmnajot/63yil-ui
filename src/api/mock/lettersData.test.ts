@@ -28,7 +28,8 @@ describe('mock letters (also the database seed)', () => {
       expect(l.example.arabic.length, l.name).toBeLessThanOrEqual(50)
       expect(l.example.transliteration.length, l.name).toBeLessThanOrEqual(50)
       expect(l.example.meaning.length, l.name).toBeLessThanOrEqual(100)
-      for (const activity of Object.values(l.activities)) expect(activity.instructions.length, l.name).toBeLessThanOrEqual(300)
+      for (const activity of Object.values(l.activities)) expect(activity!.instructions.length, l.name).toBeLessThanOrEqual(300)
+      for (const drill of l.activities.join!.drills) expect(drill.text.length, drill.text).toBeLessThanOrEqual(30)
     }
   })
 })

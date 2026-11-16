@@ -6,7 +6,7 @@ import { describeError } from '@/i18n/describeError'
 import { useI18n } from '@/i18n/useI18n'
 import { useAsync } from '@/shared/hooks/useAsync'
 import { ErrorMessage, Loading } from '@/shared/components/StatusMessage'
-import { isActivityType } from '@/types/letter'
+import { availableActivities, isActivityType } from '@/types/letter'
 import { ActivityPanel } from './components/ActivityPanel'
 import { ActivityTabs } from './components/ActivityTabs'
 import { LessonNav } from './components/LessonNav'
@@ -42,7 +42,10 @@ export function LessonPage() {
   }
 
   const { letter, all } = lesson.data
+  const steps = availableActivities(letter)
   const activity = isActivityType(params.activity) ? params.activity : 'trace'
+  // e.g. /letters/2/join while the backend has no drills yet: go to the first step instead.
+  if (!steps.includes(activity)) return <Navigate to={lessonPath(letter.id)} replace />
   const index = all.findIndex((item) => item.id === letter.id)
 
   return (
@@ -54,8 +57,8 @@ export function LessonPage() {
         <LetterInfo letter={letter} />
       </div>
 
-      <ActivityTabs letterId={letter.id} current={activity} />
-      <ActivityPanel letter={letter} activity={activity} next={all[index + 1]} />
+      <ActivityTabs letterId={letter.id} current={activity} available={steps} />
+      <ActivityPanel letter={letter} activity={activity} alphabet={all} next={all[index + 1]} />
     </div>
   )
 }
